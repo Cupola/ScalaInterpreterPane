@@ -23,7 +23,7 @@
 package de.sciss.scalainterpreter
 
 import java.awt.{ BorderLayout, Color }
-import java.io.{ IOException, Writer => JWriter }
+import java.io.{ IOException, OutputStream, Writer }
 import javax.swing.{ AbstractAction, JPanel, JScrollPane, JTextArea, ScrollPaneConstants }
 import ScrollPaneConstants._
 
@@ -70,7 +70,7 @@ extends JPanel with CustomizableFont {
    }
 
    // ---- Writer ----
-   object writer extends JWriter {
+   object writer extends Writer {
       def close {}
       def flush {}
 
@@ -78,6 +78,20 @@ extends JPanel with CustomizableFont {
       def write( ch: Array[ Char ], off: Int, len: Int ) {
          val str = new String( ch, off, len );
          textPane.append( str )
+      }
+   }
+
+   // ---- Writer ----
+   object outputStream extends OutputStream {
+      @throws( classOf[ IOException ])
+      override def write( b: Array[ Byte ], off: Int, len: Int ) {
+         val str = new String( b, off, len );
+         textPane.append( str )
+      }
+
+      @throws( classOf[ IOException ])
+      def write( b: Int ) {
+         write( Array( b.toByte ), 0, 1 )
       }
    }
 }

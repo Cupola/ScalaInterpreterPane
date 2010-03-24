@@ -1,7 +1,7 @@
 package de.sciss.scalainterpreter
 
-import java.awt.{GraphicsEnvironment, EventQueue}
-import javax.swing.{WindowConstants, SwingConstants, JSplitPane, JFrame}
+import java.awt.{ EventQueue, GraphicsEnvironment }
+import javax.swing.{ JFrame, JSplitPane, SwingConstants, WindowConstants }
 
 object Main extends Runnable {
    def main( args: Array[ String ]) {
@@ -13,6 +13,8 @@ object Main extends Runnable {
       val lp = new LogPane
       lp.init
       ip.out = Some( lp.writer )
+      Console.setOut( lp.outputStream )
+      Console.setErr( lp.outputStream )
       ip.init
 
       val frame = new JFrame( "Scala Interpreter" )
