@@ -33,11 +33,11 @@ import tools.nsc.{ ConsoleWriter, Interpreter, InterpreterResults => IR, NewLine
 import java.io.{ File, PrintWriter, Writer }
 
 object ScalaInterpreterPane {
-   val version = 0.12
+   val version = 0.13
 }
 
 /**
- *    @version 0.12, 23-Mar-10
+ *    @version 0.13, 04-May-10
  */
 class ScalaInterpreterPane
 extends JPanel with CustomizableFont {
