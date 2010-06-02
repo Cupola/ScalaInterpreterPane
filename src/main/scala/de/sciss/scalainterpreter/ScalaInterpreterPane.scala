@@ -37,13 +37,13 @@ object ScalaInterpreterPane {
 }
 
 /**
- *    @version 0.13, 04-May-10
+ *    @version 0.13, 02-Jun-10
  */
 class ScalaInterpreterPane
 extends JPanel with CustomizableFont {
    pane =>
 
-   private var interpreterVar: Option[ Interpreter ] = None
+   @volatile private var interpreterVar: Option[ Interpreter ] = None
    private var docVar: Option[ SyntaxDocument ] = None
 
    // subclasses may override this
@@ -58,7 +58,8 @@ extends JPanel with CustomizableFont {
    var customKeyMapActions:    Map[ KeyStroke, Function0[ Unit ]] = Map.empty
    var customKeyProcessAction: Option[ Function1[ KeyEvent, KeyEvent ]] = None
    var initialText = """// Type Scala code here.
-// Press '""" + executeKeyStroke + """' to execute selected text
+// Press '""" + KeyEvent.getKeyModifiersText( executeKeyStroke.getModifiers() ) + " + " +
+      KeyEvent.getKeyText( executeKeyStroke.getKeyCode() ) + """' to execute selected text
 // or current line.
 """
 
@@ -92,14 +93,14 @@ extends JPanel with CustomizableFont {
                set
             }
 
+            DefaultSyntaxKit.initKit()
             val in = new Interpreter( settings, new NewLinePrintWriter( out getOrElse (new ConsoleWriter), true )) {
                override protected def parentClassLoader = pane.getClass.getClassLoader
             }
             in.setContextClassLoader()
             bindingsCreator.foreach( _.apply( in ))
-            interpreterVar = Some( in )
             initialCode.foreach( code => in.interpret( code ))
-            DefaultSyntaxKit.initKit()
+            interpreterVar = Some( in )
          }
 
          override protected def done {
@@ -181,13 +182,13 @@ extends JPanel with CustomizableFont {
    def interpret( code: String ) {
       interpreterVar.foreach( in => {
          status( null )
-         val result = in.interpret( code )
-         match {
+         try { in.interpret( code ) match {
             case IR.Error       => status( "! Error !" )
             case IR.Success     => status( "Ok. <" + in.mostRecentVar + ">" )
             case IR.Incomplete  => status( "! Code incomplete !" )
             case _ =>
-         }
+         }}
+         catch { case e => e.printStackTrace() }
       })
    }
 }
