@@ -23,7 +23,6 @@
 package de.sciss.scalainterpreter
 
 import java.awt.{ BorderLayout, Dimension, Font, GraphicsEnvironment, Toolkit }
-import java.awt.event.{ ActionEvent, KeyEvent, KeyListener }
 import javax.swing.{ AbstractAction, Box, JComponent, JEditorPane, JLabel, JPanel, JProgressBar, JScrollPane,
    KeyStroke, OverlayLayout, ScrollPaneConstants, SwingWorker }
 import ScrollPaneConstants._
@@ -31,13 +30,14 @@ import ScrollPaneConstants._
 import jsyntaxpane.{ DefaultSyntaxKit, SyntaxDocument }
 import tools.nsc.{ ConsoleWriter, Interpreter, InterpreterResults => IR, NewLinePrintWriter, Settings }
 import java.io.{ File, PrintWriter, Writer }
+import java.awt.event.{InputEvent, ActionEvent, KeyEvent, KeyListener}
 
 object ScalaInterpreterPane {
    val version = 0.13
 }
 
 /**
- *    @version 0.13, 02-Jun-10
+ *    @version 0.14, 11-Jun-10
  */
 class ScalaInterpreterPane
 extends JPanel with CustomizableFont {
@@ -47,7 +47,10 @@ extends JPanel with CustomizableFont {
    private var docVar: Option[ SyntaxDocument ] = None
 
    // subclasses may override this
-   var executeKeyStroke = KeyStroke.getKeyStroke( KeyEvent.VK_E, Toolkit.getDefaultToolkit.getMenuShortcutKeyMask )
+   var executeKeyStroke = {
+      val ms = Toolkit.getDefaultToolkit.getMenuShortcutKeyMask
+      KeyStroke.getKeyStroke( KeyEvent.VK_E, if( ms == InputEvent.CTRL_MASK ) ms | InputEvent.SHIFT_MASK else ms )
+   }
 
    // subclasses may override this
    var initialCode: Option[ String ] = None
