@@ -33,7 +33,7 @@ import java.io.{ File, PrintWriter, Writer }
 import java.awt.event.{InputEvent, ActionEvent, KeyEvent, KeyListener}
 
 object ScalaInterpreterPane {
-   val version = 0.13
+   val version = 0.15
 }
 
 /**
