@@ -136,11 +136,7 @@ extends JPanel with CustomizableFont {
       imap.put( executeKeyStroke, "de.sciss.exec" )
       amap.put( "de.sciss.exec", new AbstractAction {
          def actionPerformed( e: ActionEvent ) {
-            var txt = editorPane.getSelectedText
-            if( txt == null ) {
-               docVar.foreach( d => txt = d.getLineAt( editorPane.getCaretPosition ))
-            }
-            if( txt != null ) interpret( txt )
+            getSelectedTextOrCurrentLine.foreach( interpret( _ ))
          }
       })
       customKeyMapActions.iterator.zipWithIndex.foreach( tup => {
@@ -169,6 +165,18 @@ extends JPanel with CustomizableFont {
       add( ggScroll, BorderLayout.CENTER )
       add( statusPane, BorderLayout.SOUTH )
    }
+
+   def getSelectedText : Option[ String ] = {
+      val txt = editorPane.getSelectedText
+      if( txt != null ) Some( txt ) else None
+   }
+
+   def getCurrentLine : Option[ String ] =
+      docVar.map( _.getLineAt( editorPane.getCaretPosition ))
+
+   def getSelectedTextOrCurrentLine : Option[ String ] =
+      getSelectedText.orElse( getCurrentLine )
+
 
    /**
     *    Subclasses may override this to
