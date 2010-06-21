@@ -33,7 +33,11 @@ import java.io.{ File, PrintWriter, Writer }
 import java.awt.event.{InputEvent, ActionEvent, KeyEvent, KeyListener}
 
 object ScalaInterpreterPane {
-   val version = 0.15
+   val name          = "ScalaInterpreterPane"
+   val version       = 0.16
+   val copyright     = "(C)opyright 2010 Hanns Holger Rutz"
+
+   def versionString = (version + 0.001).toString.substring( 0, 4 )
 }
 
 /**
